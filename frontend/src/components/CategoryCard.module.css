@@ -1,0 +1,121 @@
+.card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+/* Icon */
+.iconWrapper {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, var(--color-cream), var(--color-light-gray));
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+}
+
+.card:hover .iconWrapper {
+    background: linear-gradient(135deg, rgba(74, 124, 89, 0.1), rgba(74, 124, 89, 0.05));
+}
+
+.icon {
+    font-size: 2rem;
+}
+
+/* Content */
+.content {
+    flex: 1;
+}
+
+.title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-black);
+    margin: 0 0 var(--space-2) 0;
+    transition: color var(--transition-fast);
+}
+
+.card:hover .title {
+    color: var(--color-primary);
+}
+
+.description {
+    font-size: var(--text-sm);
+    color: var(--color-medium-gray);
+    margin: 0;
+    line-height: var(--leading-relaxed);
+}
+
+/* Arrow */
+.arrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--color-medium-gray);
+    transition: all var(--transition-fast);
+}
+
+.arrow svg {
+    width: 24px;
+    height: 24px;
+}
+
+.card:hover .arrow {
+    color: var(--color-primary);
+    transform: translateX(4px);
+}
+
+[dir="rtl"] .arrow svg {
+    transform: scaleX(-1);
+}
+
+[dir="rtl"] .card:hover .arrow {
+    transform: translateX(-4px);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .arrow {
+        display: none;
+    }
+}

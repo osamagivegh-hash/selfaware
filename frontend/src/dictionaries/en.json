@@ -1,0 +1,72 @@
+{
+    "meta": {
+        "siteName": "SelfActual",
+        "siteDescription": "An educational platform for psychological awareness and self-development - Trusted, meaningful content for a better life"
+    },
+    "nav": {
+        "home": "Home",
+        "awareness": "Psychological Awareness",
+        "selfDevelopment": "Self Development",
+        "about": "About Us",
+        "contact": "Contact"
+    },
+    "hero": {
+        "title": "Your Journey to Deeper Awareness Starts Here",
+        "subtitle": "Trusted educational content to help you understand yourself better and develop your life in a balanced and healthy way",
+        "cta": "Explore Articles"
+    },
+    "sections": {
+        "editorsPicks": "Editor's Picks",
+        "latestArticles": "Latest Articles",
+        "exploreCategories": "Explore Our Sections",
+        "readMore": "Read More",
+        "minuteRead": "min read"
+    },
+    "categories": {
+        "awareness": {
+            "title": "Psychological Awareness",
+            "description": "Articles to help you understand your emotions and thoughts, and handle them wisely"
+        },
+        "selfDevelopment": {
+            "title": "Self Development",
+            "description": "Practical tools and tips to improve your personal and professional life"
+        }
+    },
+    "footer": {
+        "about": "About",
+        "aboutText": "SelfActual is an educational platform dedicated to spreading psychological awareness and supporting your self-development journey. We do not provide therapy or medical diagnosis.",
+        "quickLinks": "Quick Links",
+        "legal": "Legal",
+        "privacy": "Privacy Policy",
+        "disclaimer": "Disclaimer",
+        "terms": "Terms of Use",
+        "contact": "Contact Us",
+        "copyright": "All rights reserved",
+        "madeWith": "Made with ❤️ for awareness and growth"
+    },
+    "article": {
+        "writtenBy": "Written by",
+        "publishedOn": "Published on",
+        "readingTime": "Reading time",
+        "shareArticle": "Share this article",
+        "relatedArticles": "Related Articles",
+        "backToHome": "Back to Home"
+    },
+    "mission": {
+        "title": "Our Mission",
+        "text": "We believe psychological awareness is a right for everyone. Our goal is to provide trusted, accessible content that helps you understand yourself and others better, leading to a more balanced and fulfilling life.",
+        "disclaimer": "Important Note: The content provided here is educational only and is not a substitute for professional consultation."
+    },
+    "errors": {
+        "notFound": "Sorry, page not found",
+        "serverError": "Something went wrong, please try again later",
+        "goHome": "Go Home"
+    },
+    "contact": {
+        "title": "Contact Us",
+        "subtitle": "We'd love to hear your thoughts and suggestions",
+        "email": "Email",
+        "message": "Your Message",
+        "send": "Send"
+    }
+}

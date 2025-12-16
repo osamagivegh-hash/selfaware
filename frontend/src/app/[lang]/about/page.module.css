@@ -1,0 +1,128 @@
+.page {
+    min-height: 100vh;
+}
+
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+/* Hero */
+.hero {
+    padding: var(--space-20) 0;
+    background: linear-gradient(135deg,
+            var(--color-cream) 0%,
+            var(--color-off-white) 50%,
+            var(--color-light-gray) 100%);
+    text-align: center;
+}
+
+.title {
+    font-size: var(--text-5xl);
+    font-weight: 700;
+    color: var(--color-black);
+    margin-bottom: var(--space-4);
+}
+
+.subtitle {
+    font-size: var(--text-xl);
+    color: var(--color-dark-gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Content */
+.content {
+    padding: var(--space-16) 0;
+    background: var(--color-off-white);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card */
+.card {
+    background: var(--color-white);
+    padding: var(--space-8);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.cardWarning {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(212, 165, 116, 0.05));
+    border: 1px solid rgba(212, 165, 116, 0.3);
+}
+
+@media (max-width: 768px) {
+    .cardWarning {
+        grid-column: span 1;
+    }
+}
+
+.cardIcon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-4);
+}
+
+.cardTitle {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-black);
+    margin-bottom: var(--space-4);
+}
+
+.cardText {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-dark-gray);
+    margin: 0;
+}
+
+.valuesList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.valuesList li {
+    position: relative;
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-dark-gray);
+}
+
+[dir="rtl"] .valuesList li {
+    padding-left: 0;
+    padding-right: var(--space-6);
+}
+
+.valuesList li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+[dir="rtl"] .valuesList li::before {
+    left: auto;
+    right: 0;
+}
