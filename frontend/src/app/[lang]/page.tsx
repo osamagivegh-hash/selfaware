@@ -103,6 +103,14 @@ export default async function HomePage({ params }: PageProps) {
             title: lang === 'ar' ? 'طريقك نحو حياة أفضل' : 'Your Path to a Better Life',
             subtitle: lang === 'ar' ? 'خطوات عملية لتطوير الذات والنمو الشخصي' : 'Practical steps for self-development and personal growth',
         },
+        {
+            title: lang === 'ar' ? 'اكتشف قوتك الداخلية' : 'Discover Your Inner Strength',
+            subtitle: lang === 'ar' ? 'كل منا يملك قوة خفية تنتظر الظهور' : 'Each of us has hidden strengths waiting to emerge',
+        },
+        {
+            title: lang === 'ar' ? 'السلام الداخلي يبدأ هنا' : 'Inner Peace Starts Here',
+            subtitle: lang === 'ar' ? 'تقنيات بسيطة لتحقيق الهدوء والتوازن' : 'Simple techniques to achieve calm and balance',
+        },
     ];
 
     return (

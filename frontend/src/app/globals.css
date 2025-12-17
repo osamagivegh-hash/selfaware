@@ -6,42 +6,45 @@
 
 /* CSS Variables - Design Tokens */
 :root {
-  /* Primary Colors - Calm, trustworthy palette */
-  --color-primary: #4A7C59;        /* Sage green - calm, growth */
-  --color-primary-light: #6B9B7A;
-  --color-primary-dark: #3A6249;
-  
-  /* Secondary Colors - Warmth and trust */
-  --color-secondary: #8B7355;      /* Warm brown - grounding */
-  --color-secondary-light: #A89076;
-  --color-secondary-dark: #6E5A44;
-  
+  /* Primary Colors - Deep, trustworthy palette */
+  --color-primary: #2563eb;
+  /* Royal blue - trust, depth */
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #1d4ed8;
+
+  /* Secondary Colors - Elegant warmth */
+  --color-secondary: #7c3aed;
+  /* Violet - creativity, wisdom */
+  --color-secondary-light: #8b5cf6;
+  --color-secondary-dark: #6d28d9;
+
   /* Accent Colors */
-  --color-accent: #D4A574;         /* Soft gold - wisdom */
-  --color-accent-light: #E5C4A1;
-  --color-accent-dark: #B8885A;
-  
+  --color-accent: #f59e0b;
+  /* Amber gold - energy, optimism */
+  --color-accent-light: #fbbf24;
+  --color-accent-dark: #d97706;
+
   /* Neutral Colors */
   --color-white: #FFFFFF;
-  --color-off-white: #FAFAF8;
-  --color-cream: #F5F3EF;
-  --color-light-gray: #E8E6E1;
-  --color-medium-gray: #9A9A9A;
-  --color-dark-gray: #4A4A4A;
-  --color-charcoal: #2D2D2D;
-  --color-black: #1A1A1A;
-  
+  --color-off-white: #f8fafc;
+  --color-cream: #f1f5f9;
+  --color-light-gray: #e2e8f0;
+  --color-medium-gray: #64748b;
+  --color-dark-gray: #475569;
+  --color-charcoal: #1e293b;
+  --color-black: #0f172a;
+
   /* Semantic Colors */
-  --color-success: #4A7C59;
-  --color-warning: #D4A574;
-  --color-error: #C75B5B;
-  --color-info: #5B8BC7;
-  
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #0ea5e9;
+
   /* Typography */
   --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-arabic: 'Noto Naskh Arabic', 'Traditional Arabic', serif;
   --font-heading: 'Outfit', var(--font-primary);
-  
+
   /* Font Sizes */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -53,13 +56,13 @@
   --text-4xl: 2.25rem;
   --text-5xl: 3rem;
   --text-6xl: 3.75rem;
-  
+
   /* Line Heights */
   --leading-tight: 1.25;
   --leading-normal: 1.5;
   --leading-relaxed: 1.75;
   --leading-loose: 2;
-  
+
   /* Spacing Scale */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -73,7 +76,7 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  
+
   /* Border Radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -81,22 +84,22 @@
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
-  
+
   /* Shadows - Soft, calming */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-normal: 300ms ease;
   --transition-slow: 500ms ease;
-  
+
   /* Container */
   --container-max: 1200px;
   --container-narrow: 800px;
-  
+
   /* Z-Index Scale */
   --z-dropdown: 100;
   --z-sticky: 200;
@@ -121,7 +124,9 @@
    Base Styles
    ============================================ */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -151,7 +156,12 @@ body {
    Typography
    ============================================ */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 600;
   line-height: var(--leading-tight);
@@ -159,22 +169,39 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--space-4);
 }
 
-[dir="rtl"] h1, 
-[dir="rtl"] h2, 
-[dir="rtl"] h3, 
-[dir="rtl"] h4, 
-[dir="rtl"] h5, 
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
 [dir="rtl"] h6 {
   font-family: var(--font-arabic);
   font-weight: 700;
 }
 
-h1 { font-size: var(--text-5xl); }
-h2 { font-size: var(--text-4xl); }
-h3 { font-size: var(--text-3xl); }
-h4 { font-size: var(--text-2xl); }
-h5 { font-size: var(--text-xl); }
-h6 { font-size: var(--text-lg); }
+h1 {
+  font-size: var(--text-5xl);
+}
+
+h2 {
+  font-size: var(--text-4xl);
+}
+
+h3 {
+  font-size: var(--text-3xl);
+}
+
+h4 {
+  font-size: var(--text-2xl);
+}
+
+h5 {
+  font-size: var(--text-xl);
+}
+
+h6 {
+  font-size: var(--text-lg);
+}
 
 p {
   margin-bottom: var(--space-4);
@@ -357,8 +384,13 @@ a:hover {
    ============================================ */
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeInUp {
@@ -366,6 +398,7 @@ a:hover {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -377,6 +410,7 @@ a:hover {
     opacity: 0;
     transform: translateX(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -388,6 +422,7 @@ a:hover {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -395,8 +430,15 @@ a:hover {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .animate-fade-in {
@@ -417,11 +459,11 @@ a:hover {
     --text-4xl: 2rem;
     --text-3xl: 1.5rem;
   }
-  
+
   .container {
     padding: 0 var(--space-4);
   }
-  
+
   .hide-mobile {
     display: none !important;
   }
@@ -437,31 +479,97 @@ a:hover {
    Utility Classes
    ============================================ */
 
-.text-center { text-align: center; }
-.text-start { text-align: start; }
-.text-end { text-align: end; }
+.text-center {
+  text-align: center;
+}
 
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: var(--space-2); }
-.gap-4 { gap: var(--space-4); }
-.gap-6 { gap: var(--space-6); }
-.gap-8 { gap: var(--space-8); }
+.text-start {
+  text-align: start;
+}
 
-.mt-4 { margin-top: var(--space-4); }
-.mt-8 { margin-top: var(--space-8); }
-.mt-12 { margin-top: var(--space-12); }
-.mb-4 { margin-bottom: var(--space-4); }
-.mb-8 { margin-bottom: var(--space-8); }
-.mb-12 { margin-bottom: var(--space-12); }
+.text-end {
+  text-align: end;
+}
 
-.py-8 { padding-top: var(--space-8); padding-bottom: var(--space-8); }
-.py-12 { padding-top: var(--space-12); padding-bottom: var(--space-12); }
-.py-16 { padding-top: var(--space-16); padding-bottom: var(--space-16); }
-.py-20 { padding-top: var(--space-20); padding-bottom: var(--space-20); }
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: var(--space-2);
+}
+
+.gap-4 {
+  gap: var(--space-4);
+}
+
+.gap-6 {
+  gap: var(--space-6);
+}
+
+.gap-8 {
+  gap: var(--space-8);
+}
+
+.mt-4 {
+  margin-top: var(--space-4);
+}
+
+.mt-8 {
+  margin-top: var(--space-8);
+}
+
+.mt-12 {
+  margin-top: var(--space-12);
+}
+
+.mb-4 {
+  margin-bottom: var(--space-4);
+}
+
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
+
+.mb-12 {
+  margin-bottom: var(--space-12);
+}
+
+.py-8 {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+
+.py-12 {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+}
+
+.py-16 {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+.py-20 {
+  padding-top: var(--space-20);
+  padding-bottom: var(--space-20);
+}
 
 /* Grid System */
 .grid {
@@ -482,6 +590,7 @@ a:hover {
 }
 
 @media (max-width: 768px) {
+
   .grid-2,
   .grid-3,
   .grid-4 {
@@ -490,6 +599,7 @@ a:hover {
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
+
   .grid-3,
   .grid-4 {
     grid-template-columns: repeat(2, 1fr);
