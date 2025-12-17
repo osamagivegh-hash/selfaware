@@ -2,6 +2,7 @@ import { getDictionary } from '@/lib/dictionaries';
 import HeroSlider from '@/components/HeroSlider';
 import CategoryCard from '@/components/CategoryCard';
 import ArticleCard from '@/components/ArticleCard';
+import api from '@/lib/api';
 import type { Language, Article } from '@/types';
 import styles from './page.module.css';
 
@@ -9,86 +10,37 @@ interface PageProps {
     params: { lang: string };
 }
 
-// Sample data - in production, this would come from the API
-const getSampleArticles = (lang: Language): Article[] => [
-    {
-        _id: '1',
-        title: {
-            ar: 'فهم مشاعرك: دليل للوعي العاطفي',
-            en: 'Understanding Your Emotions: A Guide to Emotional Awareness',
-        },
-        slug: 'understanding-emotions-guide',
-        excerpt: {
-            ar: 'تعلم كيف تتعرف على مشاعرك وتفهمها بشكل أفضل لتحقيق توازن نفسي أفضل في حياتك اليومية.',
-            en: 'Learn how to recognize and understand your emotions better to achieve a healthier psychological balance in your daily life.',
-        },
-        content: { ar: '', en: '' },
-        category: { _id: 'c1', slug: 'awareness', name: { ar: 'الوعي النفسي', en: 'Psychological Awareness' }, description: { ar: '', en: '' }, createdAt: '', updatedAt: '' },
-        author: 'a1',
-        tags: ['emotions', 'awareness'],
-        status: 'published',
-        isEditorsPick: true,
-        readingTime: { ar: 8, en: 7 },
-        seo: { title: { ar: '', en: '' }, description: { ar: '', en: '' }, keywords: [] },
-        publishedAt: '2024-12-15T10:00:00Z',
-        createdAt: '2024-12-15T10:00:00Z',
-        updatedAt: '2024-12-15T10:00:00Z',
-    },
-    {
-        _id: '2',
-        title: {
-            ar: 'عادات صباحية تغير حياتك',
-            en: 'Morning Habits That Transform Your Life',
-        },
-        slug: 'morning-habits-transform-life',
-        excerpt: {
-            ar: 'اكتشف مجموعة من العادات الصباحية البسيطة التي يمكن أن تحدث فرقاً كبيراً في إنتاجيتك وسعادتك.',
-            en: 'Discover a set of simple morning habits that can make a big difference in your productivity and happiness.',
-        },
-        content: { ar: '', en: '' },
-        category: { _id: 'c2', slug: 'self-development', name: { ar: 'تطوير الذات', en: 'Self Development' }, description: { ar: '', en: '' }, createdAt: '', updatedAt: '' },
-        author: 'a1',
-        tags: ['habits', 'productivity'],
-        status: 'published',
-        isEditorsPick: true,
-        readingTime: { ar: 6, en: 5 },
-        seo: { title: { ar: '', en: '' }, description: { ar: '', en: '' }, keywords: [] },
-        publishedAt: '2024-12-14T10:00:00Z',
-        createdAt: '2024-12-14T10:00:00Z',
-        updatedAt: '2024-12-14T10:00:00Z',
-    },
-    {
-        _id: '3',
-        title: {
-            ar: 'التعامل مع القلق في الحياة اليومية',
-            en: 'Managing Anxiety in Daily Life',
-        },
-        slug: 'managing-daily-anxiety',
-        excerpt: {
-            ar: 'نصائح عملية للتعامل مع مشاعر القلق اليومية والحفاظ على هدوئك النفسي.',
-            en: 'Practical tips for dealing with daily anxiety and maintaining your psychological calm.',
-        },
-        content: { ar: '', en: '' },
-        category: { _id: 'c1', slug: 'awareness', name: { ar: 'الوعي النفسي', en: 'Psychological Awareness' }, description: { ar: '', en: '' }, createdAt: '', updatedAt: '' },
-        author: 'a1',
-        tags: ['anxiety', 'mental-health'],
-        status: 'published',
-        isEditorsPick: false,
-        readingTime: { ar: 10, en: 9 },
-        seo: { title: { ar: '', en: '' }, description: { ar: '', en: '' }, keywords: [] },
-        publishedAt: '2024-12-13T10:00:00Z',
-        createdAt: '2024-12-13T10:00:00Z',
-        updatedAt: '2024-12-13T10:00:00Z',
-    },
-];
+// Fetch articles from API
+async function getArticles(): Promise<Article[]> {
+    try {
+        const response = await api.getArticles({ limit: 10 });
+        return response.data || [];
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+        return [];
+    }
+}
+
+// Fetch editor's picks from API
+async function getEditorsPicks(): Promise<Article[]> {
+    try {
+        const response = await api.getEditorsPicks(4);
+        return response.data || [];
+    } catch (error) {
+        console.error('Error fetching editor picks:', error);
+        return [];
+    }
+}
 
 export default async function HomePage({ params }: PageProps) {
     const lang = params.lang as Language;
     const dict = await getDictionary(lang);
 
-    // Sample data - replace with API calls in production
-    const articles = getSampleArticles(lang);
-    const editorsPicks = articles.filter(a => a.isEditorsPick);
+    // Fetch real data from API
+    const [articles, editorsPicks] = await Promise.all([
+        getArticles(),
+        getEditorsPicks()
+    ]);
 
     const heroSlides = [
         {
