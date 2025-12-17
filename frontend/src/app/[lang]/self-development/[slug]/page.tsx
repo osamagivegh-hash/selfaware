@@ -1,85 +1,28 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getDictionary, formatDate } from '@/lib/dictionaries';
-import type { Language } from '@/types';
+import api from '@/lib/api';
+import type { Language, Article } from '@/types';
 import styles from '../../awareness/[slug]/page.module.css';
 
 interface PageProps {
     params: { lang: string; slug: string };
 }
 
-// Generate static params for SSG
-export async function generateStaticParams() {
-    return [
-        { lang: 'ar', slug: 'morning-habits-transform-life' },
-        { lang: 'en', slug: 'morning-habits-transform-life' },
-    ];
-}
-
-// Sample article data - replace with API call
-const getArticle = async (slug: string, lang: Language) => {
-    const articles: Record<string, any> = {
-        'morning-habits-transform-life': {
-            title: {
-                ar: 'عادات صباحية تغير حياتك',
-                en: 'Morning Habits That Transform Your Life',
-            },
-            excerpt: {
-                ar: 'اكتشف مجموعة من العادات الصباحية البسيطة',
-                en: 'Discover a set of simple morning habits',
-            },
-            content: {
-                ar: `
-          <h2>قوة الروتين الصباحي</h2>
-          <p>كيف تبدأ يومك يحدد مسار يومك بأكمله. الروتين الصباحي الجيد يمكن أن يعزز طاقتك وتركيزك ومزاجك.</p>
-          
-          <h2>عادات بسيطة لتبدأ بها</h2>
-          <ul>
-            <li>استيقظ قبل الآخرين بساعة</li>
-            <li>اشرب كوباً من الماء</li>
-            <li>مارس التأمل لـ 5 دقائق</li>
-            <li>اكتب 3 أشياء تشعر بالامتنان لها</li>
-          </ul>
-          
-          <blockquote>الصباح هو بوابة اليوم. كيف تستقبله يحدد كيف تعيش يومك.</blockquote>
-          
-          <h2>ابدأ تدريجياً</h2>
-          <p>لا تحاول تغيير كل شيء دفعة واحدة. ابدأ بعادة واحدة وأضف عادات جديدة تدريجياً كل أسبوع.</p>
-        `,
-                en: `
-          <h2>The Power of Morning Routine</h2>
-          <p>How you start your day determines the course of your entire day. A good morning routine can boost your energy, focus, and mood.</p>
-          
-          <h2>Simple Habits to Start With</h2>
-          <ul>
-            <li>Wake up an hour before others</li>
-            <li>Drink a glass of water</li>
-            <li>Practice meditation for 5 minutes</li>
-            <li>Write down 3 things you are grateful for</li>
-          </ul>
-          
-          <blockquote>The morning is the gateway to your day. How you greet it determines how you live it.</blockquote>
-          
-          <h2>Start Gradually</h2>
-          <p>Don't try to change everything at once. Start with one habit and gradually add new ones each week.</p>
-        `,
-            },
-            category: 'self-development',
-            author: {
-                name: { ar: 'فريق سيلف أكتشوال', en: 'SelfActual Team' },
-                bio: { ar: 'فريق متخصص في المحتوى التثقيفي', en: 'Team specialized in educational content' },
-            },
-            readingTime: { ar: 6, en: 5 },
-            publishedAt: '2024-12-14T10:00:00Z',
-        },
-    };
-
-    return articles[slug] || null;
+// Fetch article from API
+const getArticle = async (slug: string): Promise<Article | null> => {
+    try {
+        const response = await api.getArticleBySlug(slug);
+        return response.data || null;
+    } catch (error) {
+        console.error('Error fetching article:', error);
+        return null;
+    }
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const lang = params.lang as Language;
-    const article = await getArticle(params.slug, lang);
+    const article = await getArticle(params.slug);
 
     if (!article) return {};
 
@@ -100,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function SelfDevelopmentArticlePage({ params }: PageProps) {
     const lang = params.lang as Language;
     const dict = await getDictionary(lang);
-    const article = await getArticle(params.slug, lang);
+    const article = await getArticle(params.slug);
 
     if (!article) {
         notFound();
@@ -117,15 +60,15 @@ export default async function SelfDevelopmentArticlePage({ params }: PageProps) 
                     <h1 className={styles.title}>{article.title[lang]}</h1>
                     <div className={styles.meta}>
                         <span className={styles.author}>
-                            {dict.article.writtenBy} {article.author.name[lang]}
+                            {dict.article.writtenBy} {typeof article.author === 'object' ? article.author.name?.[lang] : 'SelfActual Team'}
                         </span>
                         <span className={styles.separator}>•</span>
-                        <time dateTime={article.publishedAt}>
-                            {formatDate(article.publishedAt, lang)}
+                        <time dateTime={article.publishedAt || ''}>
+                            {formatDate(article.publishedAt || new Date().toISOString(), lang)}
                         </time>
                         <span className={styles.separator}>•</span>
                         <span>
-                            {article.readingTime[lang]} {dict.sections.minuteRead}
+                            {article.readingTime?.[lang] || 5} {dict.sections.minuteRead}
                         </span>
                     </div>
                 </div>
@@ -154,3 +97,4 @@ export default async function SelfDevelopmentArticlePage({ params }: PageProps) 
         </article>
     );
 }
+
