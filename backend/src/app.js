@@ -16,6 +16,18 @@ const authorRoutes = require('./routes/authors');
 const app = express();
 
 // ============================================
+// STARTUP LOGGING (Azure Diagnostics)
+// ============================================
+console.log('========================================');
+console.log('SelfActual Backend - Starting...');
+console.log('========================================');
+console.log('NODE_ENV:', process.env.NODE_ENV || 'not set');
+console.log('PORT:', process.env.PORT || '5000 (default)');
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'SET (hidden)' : 'NOT SET ⚠️');
+console.log('CORS_ORIGIN:', process.env.CORS_ORIGIN || 'not set (will use wildcard)');
+console.log('========================================');
+
+// ============================================
 // Security Middleware
 // ============================================
 
@@ -23,17 +35,21 @@ const app = express();
 app.use(helmet());
 
 // CORS - Allow frontend access
-app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+// For Azure Container Apps, allow all origins initially to debug, then restrict
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN
+        ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
+        : '*', // Allow all if not specified (for debugging)
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-}));
+    credentials: process.env.CORS_ORIGIN ? true : false, // Only use credentials with specific origins
+};
+app.use(cors(corsOptions));
 
-// Rate limiting
+// Rate limiting (more permissive for initial testing)
 const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-    max: parseInt(process.env.RATE_LIMIT_MAX) || 100, // limit each IP
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_MAX) || 500, // Increased for testing
     message: {
         success: false,
         message: 'Too many requests, please try again later.',
@@ -48,7 +64,7 @@ app.use(limiter);
 // ============================================
 
 // Body parsing
-app.use(express.json({ limit: '10kb' })); // Limit body size for security
+app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Compression
@@ -62,41 +78,109 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // ============================================
-// Database Connection
-// ============================================
-
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI, {
-            // Modern mongoose doesn't need most options anymore
-        });
-        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.error(`❌ MongoDB Connection Error: ${error.message}`);
-        process.exit(1);
-    }
-};
-
-// ============================================
-// API Routes
+// HEALTH CHECK - MUST BE FIRST & SIMPLE
+// Azure Container Apps requires immediate response
 // ============================================
 
 const API_PREFIX = process.env.API_PREFIX || '/api';
 
-// Health check
+// Simple health check - NO database, NO async, immediate response
 app.get(`${API_PREFIX}/health`, (req, res) => {
+    res.status(200).send('OK');
+});
+
+// Root health check (some platforms check /)
+app.get('/', (req, res) => {
+    res.status(200).json({
+        service: 'SelfActual API',
+        status: 'running',
+        version: '1.0.0',
+    });
+});
+
+// Detailed health check (optional, for debugging)
+app.get(`${API_PREFIX}/health/detailed`, async (req, res) => {
+    const mongoStatus = mongoose.connection.readyState;
+    const mongoStates = {
+        0: 'disconnected',
+        1: 'connected',
+        2: 'connecting',
+        3: 'disconnecting',
+    };
+
     res.status(200).json({
         success: true,
         message: 'SelfActual API is running',
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV,
+        environment: process.env.NODE_ENV || 'not set',
+        mongodb: mongoStates[mongoStatus] || 'unknown',
     });
 });
 
-// Mount routes
-app.use(`${API_PREFIX}/articles`, articleRoutes);
-app.use(`${API_PREFIX}/categories`, categoryRoutes);
-app.use(`${API_PREFIX}/authors`, authorRoutes);
+// ============================================
+// Database Connection (NON-BLOCKING)
+// ============================================
+
+let isMongoConnected = false;
+
+const connectDB = async () => {
+    if (!process.env.MONGODB_URI) {
+        console.error('❌ MONGODB_URI is not set! Database features will not work.');
+        return;
+    }
+
+    try {
+        console.log('📡 Connecting to MongoDB...');
+        await mongoose.connect(process.env.MONGODB_URI, {
+            serverSelectionTimeoutMS: 10000, // 10 second timeout
+            socketTimeoutMS: 45000,
+        });
+        isMongoConnected = true;
+        console.log(`✅ MongoDB Connected: ${mongoose.connection.host}`);
+    } catch (error) {
+        console.error(`❌ MongoDB Connection Error: ${error.message}`);
+        console.error('⚠️ Server will continue running, but database features will fail.');
+        // DO NOT exit - let the server run for health checks
+    }
+};
+
+// Handle MongoDB connection errors after initial connection
+mongoose.connection.on('error', (err) => {
+    console.error('MongoDB connection error:', err);
+    isMongoConnected = false;
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('MongoDB disconnected. Attempting to reconnect...');
+    isMongoConnected = false;
+});
+
+mongoose.connection.on('reconnected', () => {
+    console.log('MongoDB reconnected');
+    isMongoConnected = true;
+});
+
+// ============================================
+// Database Check Middleware
+// ============================================
+
+const requireDatabase = (req, res, next) => {
+    if (!isMongoConnected) {
+        return res.status(503).json({
+            success: false,
+            message: 'Database is temporarily unavailable. Please try again later.',
+        });
+    }
+    next();
+};
+
+// ============================================
+// API Routes (require database)
+// ============================================
+
+app.use(`${API_PREFIX}/articles`, requireDatabase, articleRoutes);
+app.use(`${API_PREFIX}/categories`, requireDatabase, categoryRoutes);
+app.use(`${API_PREFIX}/authors`, requireDatabase, authorRoutes);
 
 // ============================================
 // Error Handling
@@ -148,27 +232,37 @@ app.use((err, req, res, next) => {
 });
 
 // ============================================
-// Start Server
+// Start Server (CRITICAL: Bind to 0.0.0.0)
 // ============================================
 
 const PORT = process.env.PORT || 5000;
+const HOST = '0.0.0.0'; // CRITICAL for Azure Container Apps
 
-const startServer = async () => {
-    await connectDB();
-
-    app.listen(PORT, () => {
-        console.log(`
+// Start server FIRST, then connect to MongoDB (non-blocking)
+app.listen(PORT, HOST, () => {
+    console.log(`
 ╔══════════════════════════════════════════╗
 ║     SelfActual Backend API Started       ║
 ╠══════════════════════════════════════════╣
-║  🚀 Server:  http://localhost:${PORT}        ║
-║  📊 API:     http://localhost:${PORT}${API_PREFIX}    ║
-║  🌍 Env:     ${process.env.NODE_ENV || 'development'}                  ║
+║  🚀 Server:  http://${HOST}:${PORT}            ║
+║  📊 API:     /api                        ║
+║  💚 Health:  /api/health                 ║
+║  🌍 Env:     ${(process.env.NODE_ENV || 'development').padEnd(26)}║
 ╚══════════════════════════════════════════╝
     `);
-    });
-};
 
-startServer();
+    // Connect to MongoDB AFTER server is listening
+    // This ensures health checks work even if MongoDB is slow
+    connectDB();
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Shutting down gracefully...');
+    mongoose.connection.close(false, () => {
+        console.log('MongoDB connection closed.');
+        process.exit(0);
+    });
+});
 
 module.exports = app;
