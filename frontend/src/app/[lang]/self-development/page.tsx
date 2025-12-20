@@ -4,6 +4,9 @@ import ArticleCard from '@/components/ArticleCard';
 import type { Language, Article } from '@/types';
 import styles from '../awareness/page.module.css';
 
+// Force dynamic rendering to avoid build-time timeout
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
     params: { lang: string };
 }

@@ -3,6 +3,9 @@ import { getDictionary } from '@/lib/dictionaries';
 import type { Language } from '@/types';
 import styles from '../privacy/page.module.css';
 
+// Force dynamic rendering to avoid build-time timeout
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
     params: { lang: string };
 }
