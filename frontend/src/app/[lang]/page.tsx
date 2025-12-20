@@ -6,6 +6,9 @@ import api from '@/lib/api';
 import type { Language, Article } from '@/types';
 import styles from './page.module.css';
 
+// Force dynamic rendering to avoid build-time API timeout
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
     params: { lang: string };
 }

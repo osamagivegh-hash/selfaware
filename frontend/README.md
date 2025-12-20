@@ -33,7 +33,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 5. Add Environment Variables:
    ```
-   NEXT_PUBLIC_API_URL=http://15.185.130.80/api
+   NEXT_PUBLIC_API_URL=https://selfactual-backend.nicefield-9d36ea6f.eastus.azurecontainerapps.io/api
    NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
    ```
 
@@ -65,7 +65,7 @@ vercel
 
 | Variable | Description | Production Value |
 |----------|-------------|------------------|
-| `NEXT_PUBLIC_API_URL` | Backend API URL | `http://15.185.130.80/api` |
+| `NEXT_PUBLIC_API_URL` | Backend API URL | `https://selfactual-backend.nicefield-9d36ea6f.eastus.azurecontainerapps.io/api` |
 | `NEXT_PUBLIC_SITE_URL` | Frontend URL (for SEO) | `https://your-vercel-domain.vercel.app` |
 | `NEXT_PUBLIC_GA_ID` | Google Analytics ID | (optional) |
 | `NEXT_PUBLIC_ADSENSE_ID` | AdSense Publisher ID | (optional) |
