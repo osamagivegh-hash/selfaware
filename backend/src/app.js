@@ -36,14 +36,19 @@ app.use(helmet());
 
 // CORS - Allow frontend access
 // For Azure Container Apps, allow all origins initially to debug, then restrict
+let corsOrigin = '*'; // Default to allow all
+if (process.env.CORS_ORIGIN && process.env.CORS_ORIGIN !== '*') {
+    // If specific origins provided (comma-separated), use array
+    corsOrigin = process.env.CORS_ORIGIN.split(',').map(s => s.trim());
+}
+
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN
-        ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
-        : '*', // Allow all if not specified (for debugging)
+    origin: corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: process.env.CORS_ORIGIN ? true : false, // Only use credentials with specific origins
+    credentials: corsOrigin !== '*', // Only use credentials with specific origins
 };
+console.log('CORS configured with origin:', corsOrigin);
 app.use(cors(corsOptions));
 
 // Rate limiting (more permissive for initial testing)
